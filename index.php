@@ -35,10 +35,11 @@
               </div>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+
+          <form class="form-inline my-2 my-lg-0" method="post">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="nt">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="submit">Search</button>
+        
         </div>
       </nav>
 
@@ -53,11 +54,14 @@
           <th scope="col">Kuantitas</th>
         </tr>
       </thead>
-      <tbody>
-                <?php 
+
+      <tbody id="myTable">
+        
+        <?php 
         include 'koneksi.php';
+        if(!ISSET($_POST['submit'])){
         $sepeda = mysqli_query($koneksi, "SELECT * FROM masuk");
-        $awok = mysqli_query($koneksi, "SELECT masuk.qty-keluar.qty as hasil FROM masuk join keluar on masuk.id=keluar.id");
+        $awok = mysqli_query($koneksi, "SELECT masuk.qty-keluar.qty as hasil FROM masuk join keluar on masuk.nama=keluar.nama");
        
         $nomor = 1;
         while($data = mysqli_fetch_array($sepeda)){
@@ -68,9 +72,30 @@
           <td><?php echo $data['merk']; ?></td>
           <td><?php echo $data['model']; ?></td>
           <td><?php echo $data1 = mysqli_fetch_array($awok)['hasil']; ?></td>
-
         </tr>
-        <?php } ?>
+        <?php 
+        } 
+      }
+        if(ISSET($_POST['submit'])){
+        $cari = $_POST['nt'];
+        $sepeda = mysqli_query($koneksi, "SELECT * FROM masuk where nama like '%$cari%'");
+        $awok = mysqli_query($koneksi, "SELECT masuk.qty-keluar.qty as hasil FROM masuk join keluar on masuk.nama=keluar.nama");
+        
+        $nomor = 1;
+        while($data = mysqli_fetch_array($sepeda)){
+        ?>
+        <tr>
+          <td><?php echo $nomor++; ?></td>
+          <td><?php echo $data['nama']; ?></td>
+          <td><?php echo $data['merk']; ?></td>
+          <td><?php echo $data['model']; ?></td>
+          <td><?php echo $data1 = mysqli_fetch_array($awok)['hasil']; ?></td>
+        </tr>
+        <?php
+        }
+      }
+        ?>
+        
       </tbody>
     </table>
 
