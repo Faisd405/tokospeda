@@ -61,6 +61,7 @@
                             </button>
                           </div>
                         <div class="modal-body">
+                          
                           <!-- Form Modal -->
                           <form action="update.php" method="post">
                             <div class="form-row">
@@ -122,9 +123,9 @@
             </div>
           </div>
 
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <form class="form-inline my-2 my-lg-0" method="post">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="nt">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="submit">Search</button>
           </form>
         </div>
       </nav>
@@ -143,10 +144,11 @@
 
     </tr>
   </thead>
-  <tbody>
+  <tbody id="myTable">
 
       <?php 
         //AUTOFILL MODEL PAKE AJAX LIER AJIG WKWK
+        if(!ISSET($_POST['submit'])){
         include 'koneksi.php';
         $sepeda = mysqli_query($koneksi, "SELECT * FROM keluar");
         $nomor = 1;
@@ -160,9 +162,31 @@
           <td><?php echo $data['qty']; ?></td>
           <td><?php echo $data['tgl']; ?></td>
           <td><?php echo $data['time']; ?></td>
-
         </tr>
-        <?php } ?>
+        <?php 
+        } 
+      }
+          if(ISSET($_POST['submit'])){
+          include 'koneksi.php';
+          $cari = $_POST['nt'];
+          $sepeda = mysqli_query($koneksi, "SELECT * FROM keluar where nama like '%$cari%'");
+          $nomor = 1;
+          while($data = mysqli_fetch_array($sepeda)){
+          ?>
+          <tr>
+            <td><?php echo $nomor++; ?></td>
+            <td><?php echo $data['nama']; ?></td>
+            <td><?php echo $data['merk']; ?></td>
+            <td><?php echo $data['model']; ?></td>
+            <td><?php echo $data['qty']; ?></td>
+            <td><?php echo $data['tgl']; ?></td>
+            <td><?php echo $data['time']; ?></td>
+          </tr>
+          <?php 
+          } 
+        }
+        ?>
+
   </tbody>
 </table>
 

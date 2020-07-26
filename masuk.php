@@ -11,6 +11,8 @@
     <title>Lovely Metal</title>
 
     <?php
+      include 'koneksi.php';
+      
       if(isset($_GET['pesan'])){
         if($_GET['pesan'] == "semua"){
           $message = "Tolong Diisi Lengkap";
@@ -122,9 +124,9 @@
             </div>
           </div>
 
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <form class="form-inline my-2 my-lg-0" method="post">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="nt">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" name="submit">Search</button>
           </form>
         </div>
       </nav>
@@ -143,9 +145,9 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
+
         <?php 
-        include 'koneksi.php';
+        if(!ISSET($_POST['submit'])){
         $sepeda = mysqli_query($koneksi, "SELECT * FROM masuk");
         $nomor = 1;
         while($data = mysqli_fetch_array($sepeda)){
@@ -160,8 +162,31 @@
           <td><?php echo $data['time']; ?></td>
 
         </tr>
-        <?php } ?>
-    </tr>
+        <?php 
+        }
+        } 
+
+        if(ISSET($_POST['submit'])){
+          $cari = $_POST['nt'];
+          $sepeda = mysqli_query($koneksi,"SELECT * FROM masuk where nama like '%$cari%'");
+          $nomor = 1;
+          while($data2 = mysqli_fetch_array($sepeda)){
+            ?>
+            <tr>
+              <td><?php echo $nomor++; ?></td>
+              <td><?php echo $data2['nama']; ?></td>
+              <td><?php echo $data2['merk']; ?></td>
+              <td><?php echo $data2['model']; ?></td>
+              <td><?php echo $data2['qty']; ?></td>
+              <td><?php echo $data2['tgl']; ?></td>
+              <td><?php echo $data2['time']; ?></td>
+
+            </tr>
+            <?php
+          }
+        }
+        ?>
+    
   </tbody>
 </table>
 
